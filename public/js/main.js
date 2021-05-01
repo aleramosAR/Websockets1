@@ -1,9 +1,13 @@
 const socket = io.connect();
 
-// Al agregar productos recibo el evento 'listProducts' desde el server y recargo la pagina
+// Al agregar productos recibo el evento 'listProducts' desde el server y actualizo el template
 // Para ver los cambios en la tabla
-socket.on('listProducts', (data) => {
-  location.reload();
+socket.on('listProducts', async (productos) => {
+  const archivo = await fetch('plantillas/tabla.hbs');
+  const archivoData = await archivo.text();
+  const template = Handlebars.compile(archivoData);
+  const result = template({productos});
+  document.getElementById('productos').innerHTML = result;
 });
 
 // Callback del boton submit, chequea que el form este completo y llama a la API
